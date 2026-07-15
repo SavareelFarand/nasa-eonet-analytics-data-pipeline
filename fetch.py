@@ -105,7 +105,7 @@ start, end = check_date_range(
 )
 
 
-def build_query(limit, status=None, start=None, end=None):
+def build_query(limit, status, start, end):
     # params define what datatypes must be included, | means "or". Start dict with limit
     params: dict[str, str | int] = {'limit': limit}
     if status:
