@@ -68,7 +68,7 @@ def check_date_range(start_prompt, end_prompt):
             except ValueError:
                 attempts_left -= 1
                 if attempts_left > 0:
-                    print('Invalid date format! Please use YYYY-MM-DD format, or leave blank to skip.')
+                    print('Invalid date format! Please use YYYY-MM-DD format, or leave blank to skip')
                 else:
                     print('Invalid input, Try again next time!')
                     sys.exit(0)
@@ -89,7 +89,7 @@ def check_date_range(start_prompt, end_prompt):
 
         attempts_left -= 1
         if attempts_left > 0:
-            print(f'Start date ({start}) must be before or equal to end date ({end}). Please try again.')
+            print(f'Start date ({start}) must be before or equal to end date ({end}). Please try again')
         else:
             print('Invalid input, Try again next time!')
             sys.exit(0)
