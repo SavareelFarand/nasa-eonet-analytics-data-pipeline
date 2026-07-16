@@ -105,7 +105,7 @@ start, end = check_date_range(
 )
 
 
-def build_query(limit, status=None, start=None, end=None):
+def build_query(limit, status, start, end):
     # params define what datatypes must be included, | means "or". Start dict with limit
     params: dict[str, str | int] = {'limit': limit}
     if status:
@@ -286,8 +286,8 @@ finally:
 
 # A warning -> It's ambiguous, can be the data is truly that many or real data got cut off by user limit 
 if event_count == limit:
-    print(f'Warning! returned {event_count} events, which equals your limit ({limit}).')
-    print('Data may be truncated — consider re-running with a higher limit for this date range.\n' )
+    print(f'Warning! returned {event_count} events, which equals your limit ({limit})')
+    print('Data may be truncated — consider re-running with a higher limit for this date range\n' )
 
 if success:
     print('Fetching Success! Go to raw_data.sqlite to see the result\n')
