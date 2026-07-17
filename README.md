@@ -9,7 +9,7 @@ A program to visualize natural events that occur around the world
 
 - Warns users if they fetch fewer than 10,000 events for a year or fewer than 1000 events for a month, as the data might get truncated
 
-- Uses spatial joins to process the dataset one record at a time before storing the parsed data in another database for maximum efficiency
+- Uses spatial joins to process the dataset in batches before storing the parsed data in another database for maximum efficiencyy
 
 - Converts the data into a bar charts (show total counts) and a line chart (show changes over time) 
 
@@ -121,5 +121,3 @@ python3 graph.py
 - Polygons centroids are manually calculated using the average of polygon points, making the implementation hardcoded 
 
 - Does not include logging for easier debugging and and crash analysis
-
-- The more the data processed, the more accurate the result
