@@ -29,7 +29,7 @@ flowchart TB
 
 ### Core & Database
 - **Python 3.14.5** - Programming Language
-- **SQLite 3.46.1** - Lightweight database for storing raw and processed data.
+- **SQLite 3.46.1** - Lightweight database for storing raw and processed data
 ### Data Processing & Analytics
 - **Pandas 3.0.3** - Tabular data manipulation and analysis
 - **GeoPandas 1.1.3** - Geospatial data analysis (spatial joins)
@@ -61,7 +61,7 @@ Before running this project, install the following software:
 pip install requests ijson geopandas pandas matplotlib
 ```
 
-The EEZ Land Union dataset is already included in this repository and requires no additional installation.
+The EEZ Land Union dataset is already included in this repository and requires no additional installation
 
 ## Usage
 The project consist of three connected programs:
