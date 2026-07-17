@@ -6,16 +6,9 @@ import sys
 import time
 from datetime import datetime
 
-"""
-------------------------------------------NOTE--------------------------------------------
-I chose 10k for fetching a full year events (1k wasn't enough and it truncated the events)
-For official NASA EONET maximum limit, I still can't find it.
-Additionally, NASA EONET data can change over time so it may not be as accurate as you expected.
-------------------------------------------------------------------------------------------
-"""
 
 
-# The first three functions check user inputs
+
 def check_user_input():
     attempts_left = 3
     while attempts_left > 0:
@@ -40,14 +33,14 @@ def check_status_input():
     while attempts_left > 0:
         status = input('Fetch which status? (open/closed/both): ').strip().lower()
 
-        if status == "" or status == 'both':
+        if status == 'both':
             return 'all'
         if status in ('open', 'closed'):
             return status
 
         attempts_left -= 1
         if attempts_left > 0:
-            print('Invalid input! Please type open, closed, both, or leave blank to skip.')
+            print('Invalid input! Please type open, closed, or both')
         else:
             print('Invalid input, Try again next time!')
             sys.exit(0)
@@ -59,7 +52,7 @@ def check_date_range(start_prompt, end_prompt):
         attempts_left = 3
         while attempts_left > 0:
             user_date = input(prompt).strip()
-            if user_date == '' or user_date.lower() == 'exit':
+            if user_date.lower() in ('exit', 'enter', ''):
                 sys.exit(0)
 
             try:
@@ -73,18 +66,13 @@ def check_date_range(start_prompt, end_prompt):
                     print('Invalid input, Try again next time!')
                     sys.exit(0)
 
-        return None
 
     attempts_left = 3
     while attempts_left > 0:
         start = check_date_input(start_prompt)
         end = check_date_input(end_prompt)
 
-        # if either or both is None, skip it
-        if start is None or end is None:
-            return start, end
-
-        if start <= end:
+        if start <= end: # type: ignore
             return start, end
 
         attempts_left -= 1
@@ -94,19 +82,18 @@ def check_date_range(start_prompt, end_prompt):
             print('Invalid input, Try again next time!')
             sys.exit(0)
 
-    return None, None
+
 
 
 limit = check_user_input()
 status = check_status_input()
 start, end = check_date_range(
-    'Start date (YYYY-MM-DD) [exit]: ',
-    'End date (YYYY-MM-DD) [exit]: '
-)
+    'Start date (YYYY-MM-DD) [exit/Enter]: ',
+    'End date (YYYY-MM-DD) [exit/Enter]: '
+) # type: ignore
 
 
 def build_query(limit, status, start, end):
-    # params define what datatypes must be included, | means "or". Start dict with limit
     params: dict[str, str | int] = {'limit': limit}
     if status:
         params['status'] = status   
@@ -117,8 +104,8 @@ def build_query(limit, status, start, end):
 
     return params
 
-# example:
-# https://eonet.gsfc.nasa.gov/api/v3/events?limit=10000&status=closed&start=2025-01-01&end=2025-12-31
+# NASA EONET V3 API link for 'both' natural disaster data throughout 2025
+# Parameters: limit=10000, status=all, range=2025-01-01 to 2025-12-31
 params = build_query(limit, status, start, end)
 query_string = '&'.join(f'{k}={v}' for k, v in params.items())
 url = f'https://eonet.gsfc.nasa.gov/api/v3/events?{query_string}'
