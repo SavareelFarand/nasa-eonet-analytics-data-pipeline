@@ -9,7 +9,11 @@ A program to visualize natural events that occur around the world
 
 - Warns users if they fetch fewer than 10,000 events for a year or fewer than 1000 events for a month, as the data might get truncated
 
+<<<<<<< HEAD
 - Uses spatial joins to process the dataset one record at a time before storing the parsed data in another database for maximum efficiency
+=======
+- Uses spatial joins to process the dataset in batches before storing the parsed data in another database for maximum efficiency
+>>>>>>> b4d2c5384a3d65439186c3ebc323f4ed2469ef10
 
 - Converts the data into a bar charts (show total counts) and a line chart (show changes over time) 
 
@@ -29,7 +33,11 @@ flowchart TB
 
 ### Core & Database
 - **Python 3.14.5** - Programming Language
+<<<<<<< HEAD
 - **SQLite 3.46.1** - Lightweight database for storing raw and processed data.
+=======
+- **SQLite 3.46.1** - Lightweight database for storing raw and processed data
+>>>>>>> b4d2c5384a3d65439186c3ebc323f4ed2469ef10
 ### Data Processing & Analytics
 - **Pandas 3.0.3** - Tabular data manipulation and analysis
 - **GeoPandas 1.1.3** - Geospatial data analysis (spatial joins)
@@ -61,7 +69,11 @@ Before running this project, install the following software:
 pip install requests ijson geopandas pandas matplotlib
 ```
 
+<<<<<<< HEAD
 The EEZ Land Union dataset is already included in this repository and requires no additional installation.
+=======
+The EEZ Land Union dataset is already included in this repository and requires no additional installation
+>>>>>>> b4d2c5384a3d65439186c3ebc323f4ed2469ef10
 
 ## Usage
 The project consist of three connected programs:
@@ -120,6 +132,10 @@ python3 graph.py
 
 - Polygons centroids are manually calculated using the average of polygon points, making the implementation hardcoded 
 
+<<<<<<< HEAD
 - Does not include logging for easier debugging and and crash analysis
 
 - The more the data processed, the more accurate the result
+=======
+- Does not include logging for easier debugging and crash analysis
+>>>>>>> b4d2c5384a3d65439186c3ebc323f4ed2469ef10
