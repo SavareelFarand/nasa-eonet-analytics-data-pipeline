@@ -7,8 +7,6 @@ import time
 from datetime import datetime
 
 
-
-
 def check_user_input():
     attempts_left = 3
     while attempts_left > 0:
@@ -72,7 +70,7 @@ def check_date_range(start_prompt, end_prompt):
         start = check_date_input(start_prompt)
         end = check_date_input(end_prompt)
 
-        if start <= end: # type: ignore
+        if start <= end: # type: ignore --VS Code incorrectly flags this as incompatible types
             return start, end
 
         attempts_left -= 1
@@ -84,7 +82,7 @@ def check_date_range(start_prompt, end_prompt):
 
 
 
-
+# Function returns validated strings, type checker doesn't understand nested validation
 limit = check_user_input()
 status = check_status_input()
 start, end = check_date_range(
@@ -104,25 +102,24 @@ def build_query(limit, status, start, end):
 
     return params
 
-# NASA EONET V3 API link for 'both' natural disaster data throughout 2025
-# Parameters: limit=10000, status=all, range=2025-01-01 to 2025-12-31
+
 params = build_query(limit, status, start, end)
 query_string = '&'.join(f'{k}={v}' for k, v in params.items())
 url = f'https://eonet.gsfc.nasa.gov/api/v3/events?{query_string}'
 
 
-# session keeps one connection and reuses it multiple times
+# Reuse connection to reduce overhead for 10,000 API requests
 session = requests.Session()
-session.headers.update({'User-Agent': 'EONET-Portfolio-Project (student research)'})
+session.headers.update({'User-Agent': 'EONET-Portfolio-Project (student research)'}) # Identify the project to NASA's API to respect data server and ethical scraping compliance
 
-# this function deals with API error
+
 def fetch_with_backoff(url, max_retries=4):
     delay = 3
     for attempt in range(max_retries):
         try:
             response = session.get(url, timeout=30, stream=True)
             if response.status_code in (429, 503):
-                # we ask the server directly to ask how long we have to wait, the server give a number
+                # We ask the server directly to ask how long we have to wait, the server will give a number
                 retry_after = response.headers.get('Retry-After')
 
                 if retry_after:
@@ -140,7 +137,6 @@ def fetch_with_backoff(url, max_retries=4):
             print(f'Timed out, retrying in {delay}s...')
             time.sleep(delay)
             delay *= 2
-    # safety guard, raises if max_retries achieved
     raise Exception('Max retries exceeded — fetching stopped to avoid further strain on the API')
 
 print('Loading...')
@@ -152,7 +148,7 @@ except Exception as e:
 
 
 
-# Connect and create tables for data to be stored
+
 conn = sqlite3.connect('raw_data.sqlite')
 cur = conn.cursor()
 cur.executescript('''
@@ -201,7 +197,7 @@ cur.executescript('''
 
 success = True
 event_count = 0
-# Get each key-value pairs to be inserted into tables
+# Stream JSON with ijson to avoid loading all 10,000 events into memory at once
 try:
     for event in ijson.items(response.raw, 'events.item'):
         event_id = event['id']
@@ -219,7 +215,6 @@ try:
             cat_id = cat['id']
             cat_title = cat['title']
             
-            #   this parenthesis defines columns name must be and in what order ━━━━↴
             cur.execute('''INSERT OR IGNORE INTO event_categories (event_id, category_id, title)
                         VALUES (?, ?, ?)''', (event_id, cat_id, cat_title))
 
@@ -260,7 +255,7 @@ try:
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', (event_id, mag_val, mag_un, date, geo_type, lon, lat, coords))
 
 
-    #print(f'Debug: event_count = {event_count}') --for future debug if something wrong
+    #print(f'Debug: event_count = {event_count}') --Uncomment for debugging
 
 except Exception as e:
     success = False
@@ -271,7 +266,7 @@ finally:
     cur.close()
     conn.close()
 
-# A warning -> It's ambiguous, can be the data is truly that many or real data got cut off by user limit 
+# Equal count suggests data may be truncated by the limit, consider to increase the limit if you need all events in this date range
 if event_count == limit:
     print(f'Warning! returned {event_count} events, which equals your limit ({limit})')
     print('Data may be truncated — consider re-running with a higher limit for this date range\n' )
